@@ -17,6 +17,12 @@ __pycache__/
 streamlit.err.log
 streamlit.out.log
 
+# Local app state and databases
+.streamlit_collections.json
+study_notes.db
+*.sqlite
+*.sqlite3
+
 # Vector databases
 chroma_data/
 
