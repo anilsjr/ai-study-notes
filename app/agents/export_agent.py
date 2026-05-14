@@ -2,33 +2,32 @@ import io
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
+from google.adk.tools import FunctionTool
 
-class PDFExportAgent:
-    def __init__(self):
-        self.styles = getSampleStyleSheet()
 
-    def generate_pdf(self, title: str, content_blocks: list[str]) -> bytes:
-        """
-        Generates a beautifully formatted PDF given structured content blocks.
-        """
-        buffer = io.BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=letter)
-        story = []
+def generate_pdf(title: str, content_blocks: list[str]) -> bytes:
+    """Generates a formatted PDF document from a title and content blocks.
 
-        title_style = self.styles['Title']
-        normal_style = self.styles['Normal']
+    Args:
+        title: The title of the PDF document.
+        content_blocks: A list of text blocks to include in the document.
 
-        story.append(Paragraph(title, title_style))
-        story.append(Spacer(1, 12))
+    Returns:
+        The generated PDF as bytes.
+    """
+    buffer = io.BytesIO()
+    styles = getSampleStyleSheet()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    story = [Paragraph(title, styles["Title"]), Spacer(1, 12)]
+    for block in content_blocks:
+        for line in block.split("\n"):
+            if line.strip():
+                story.append(Paragraph(line, styles["Normal"]))
+                story.append(Spacer(1, 6))
+    doc.build(story)
+    pdf_bytes = buffer.getvalue()
+    buffer.close()
+    return pdf_bytes
 
-        for block in content_blocks:
-            # simple text split for demonstration
-            for paragraph_text in block.split('\n'):
-                if paragraph_text.strip():
-                    story.append(Paragraph(paragraph_text, normal_style))
-                    story.append(Spacer(1, 6))
 
-        doc.build(story)
-        pdf_bytes = buffer.getvalue()
-        buffer.close()
-        return pdf_bytes
+pdf_export_tool = FunctionTool(func=generate_pdf)

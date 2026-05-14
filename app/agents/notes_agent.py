@@ -1,27 +1,12 @@
-from app.services.gemini import get_gemini_model
+from google.adk.agents import LlmAgent
 
-class NotesGenerationAgent:
-    def __init__(self):
-        self.model = get_gemini_model(model_name="gemini-2.5-flash")
-
-    async def generate_summary(self, context: str) -> str:
-        prompt = f"""
-        Provide a comprehensive and highly structured summary of the following study material. 
-        Format with clear headings, bullet points, and highlight key formulas or concepts in bold.
-        
-        Material:
-        {context}
-        """
-        response = await self.model.generate_content_async(prompt)
-        return response.text
-
-    async def extract_key_points(self, context: str) -> str:
-        prompt = f"""
-        Extract the absolute most critical key points and formulas from this study material.
-        Make it easy to revise.
-
-        Material:
-        {context}
-        """
-        response = await self.model.generate_content_async(prompt)
-        return response.text
+notes_agent = LlmAgent(
+    name="notes_generation_agent",
+    model="gemini-2.5-flash",
+    instruction="""You are an expert academic summarizer.
+When given study material text, produce a comprehensive, structured summary.
+Use clear markdown headings (##), bullet points, and bold key terms/formulas.
+Return ONLY the formatted markdown summary.""",
+    description="Generates structured summaries and key points from study material.",
+    output_key="summary",
+)

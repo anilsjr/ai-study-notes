@@ -242,14 +242,14 @@ def format_timestamp(raw_value: str | None) -> str:
 
 def render_sidebar() -> str:
     st.sidebar.title("AI Study Notes")
-    st.sidebar.caption(f"API: `{API_BASE_URL}`")
+    st.sidebar.caption("🤖 **ADK-powered backend**")
 
     if st.sidebar.button("Refresh backend status", use_container_width=True):
         check_backend_health.clear()
 
     healthy, status_message = check_backend_health()
     if healthy:
-        st.sidebar.success("Backend online")
+        st.sidebar.success("Backend online (ADK active)")
     else:
         st.sidebar.error("Backend offline")
         st.sidebar.caption(status_message)
